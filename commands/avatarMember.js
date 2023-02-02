@@ -1,10 +1,10 @@
 import fetch from 'axios'
-import { CLIENT_TOKEN } from '../constant';
+import { CLIENT_TOKEN } from '../constant.js';
 
-module.exports = {
+export const commandObj = {
   name: 'avm',
   description: 'Xem avatar member trong server',
-  usage: '?avm [mention]',
+  usage: 'avm [mention]',
   category: 'Utility',
   guildOnly: true,
   async execute(message, args) {

@@ -1,5 +1,5 @@
 import chalk from 'chalk';
-import Discord, { GatewayIntentBits } from 'discord.js';
+import Discord, { ActivityType, Events, GatewayIntentBits } from 'discord.js';
 import { readdirSync } from 'fs';
 import { QuickDB } from "quick.db";
 import { CLIENT_TOKEN, DEV_ID, OWNER_ID, PREFIX, startLogs, startLoreList } from './constant.js';
@@ -9,28 +9,35 @@ import { getCammom } from './utils.js';
 const database = new QuickDB();
 const { Client, Collection } = Discord;
 
-const client = new Client({ intents: [GatewayIntentBits.GuildPresences, GatewayIntentBits.GuildMembers] });
+const client = new Client({
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.MessageContent,
+    GatewayIntentBits.GuildPresences
+  ]
+});
 
 const commandFiles = readdirSync('./commands')
   .filter(file => file.endsWith('.js'));
 
 client.commands = new Collection();
 for (const file of commandFiles) {
-  const command = require(`./commands/${file}`);
-  client.commands.set(command.name, command);
+  const command = await import(`./commands/${file}`);
+  client.commands.set(command.commandObj.name, command.commandObj);
 }
 
-client.once('ready', () => {
+client.once(Events.ClientReady, () => {
   console.log(
-    chalk.bgGreenBright.black('[' + client.user.username + ']'),
+    chalk.bgGreenBright.black('[' + client.user.tag + ']'),
     'Bot Online'
   );
-  client.user.setActivity('regex', {
-    type: 'WATCHING'
+  client.user.setActivity('hadaik', {
+    type: ActivityType.Watching
   });
 });
 
-client.on('guildMemberAdd', async member => {
+client.on(Events.GuildMemberAdd, async member => {
   const Channel = member.guild.channels.cache.get(JOIN_CHANNEL_ID);
   Channel.send(
     `Ối giời ơi con xúc vật **<@${member.user.id
@@ -38,7 +45,7 @@ client.on('guildMemberAdd', async member => {
   );
 });
 
-client.on('guildMemberRemove', async member => {
+client.on(Events.GuildMemberRemove, async member => {
   const Channel = member.guild.channels.cache.get(LEAVE_CHANNEL_ID);
   Channel.send(
     `Địt mẹ chúng mày, bố mày rage quit, **${member.user.username}#${member.user.discriminator
@@ -47,7 +54,7 @@ client.on('guildMemberRemove', async member => {
 });
 
 // main function
-client.on('message', async message => {
+client.on(Events.MessageCreate, async message => {
   // chat thường ko dùng lệnh => get lore
   if (!message.content.startsWith(PREFIX) && message.author.id != OWNER_ID) {
     let search = message.content.toLowerCase();
@@ -96,10 +103,8 @@ client.on('message', async message => {
     const commandName = args.shift().toLowerCase();
 
     const command =
-      client.commands.get(commandName) ||
-      client.commands.find(
-        cmd => cmd.aliases && cmd.aliases.includes(commandName)
-      );
+      client.commands.get(commandName)
+    // console.log(chalk.bgBlue.black('import'), command.commandObj.name)
 
     if (!command) return;
     try {

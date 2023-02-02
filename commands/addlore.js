@@ -1,16 +1,17 @@
+import { PermissionFlagsBits } from "discord.js";
 import { QuickDB } from "quick.db";
-import { PREFIX } from './constant.js';
+import { PREFIX } from '../constant.js';
 
 const db = new QuickDB();
 
-module.exports = {
+export const commandObj = {
   name: 'addlore',
-  description: 'Work and get paid',
-  usage: 'addlore <keyword> <lore> [capture]',
+  description: 'Thêm lore để cùng giày xéo',
+  usage: 'addlore <keyword> ; <lore> ; [capture url]',
   category: 'Moderation',
   guildOnly: true,
   async execute(message, args) {
-    if (!message.member.hasPermission("MANAGE_ROLES")) return message.reply("Có cái tuổi loz đòi add lore <:ngr:421524933781356546>")
+    if (!message.member.permissions.has(PermissionFlagsBits.ManageRoles)) return message.reply("Có cái tuổi loz đòi add lore <:ngr:421524933781356546>")
 
     let temp = message.content.replace(`${PREFIX}addlore`, "").split(';');
 
