@@ -9,7 +9,7 @@ export const DEV_ID = process.env.DEV_ID;
 export const OWNER_ID = process.env.OWNER_ID;
 export const PREFIX = '.';
 
-export const startLoreList = [
+export const initLore = [
   {
     "search": "núp là ai",
     "lore": "**HOÀNG KWANG**, ông vua aram, chúa tể 100% wr",
@@ -35,7 +35,7 @@ export const startLoreList = [
   }
 ]
 
-export const startLogs = [
+export const initLogs = [
   {
     "author": "hadaik",
     "command": "create log",

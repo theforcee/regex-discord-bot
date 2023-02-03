@@ -2,7 +2,7 @@ import chalk from 'chalk';
 import Discord, { ActivityType, Events, GatewayIntentBits } from 'discord.js';
 import { readdirSync } from 'fs';
 import { QuickDB } from "quick.db";
-import { CLIENT_TOKEN, DEV_ID, OWNER_ID, PREFIX, startLogs, startLoreList } from './constant.js';
+import { CLIENT_TOKEN, DEV_ID, OWNER_ID, PREFIX, initLogs, initLore } from './constant.js';
 import { keepAlive } from './server.js';
 import { getCammom } from './utils.js';
 
@@ -61,7 +61,7 @@ client.on(Events.MessageCreate, async message => {
     try {
       let data = await database.get('loreList');
       if (!data || data.length < 1) {
-        database.set('loreList', startLoreList);
+        database.set('loreList', initLore);
       } else {
         let index = null;
         data.every((item, i) => {
@@ -113,7 +113,7 @@ client.on(Events.MessageCreate, async message => {
       // add to log
       database.get('dataLog').then(list => {
         if (!list || list.lenght < 1) {
-          database.set('dataLog', startLogs);
+          database.set('dataLog', initLogs);
         } else {
           let now = new Date().toLocaleString('vi-VN', {
             timeZone: 'Asia/Jakarta'
