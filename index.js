@@ -55,7 +55,7 @@ client.on(Events.GuildMemberRemove, async member => {
 
 // main function
 client.on(Events.MessageCreate, async message => {
-  // chat thường ko dùng lệnh => get lore
+  // normal chatting => get lore from db
   if (!message.content.startsWith(PREFIX) && message.author.id != OWNER_ID) {
     let search = message.content.toLowerCase();
     try {
@@ -63,7 +63,7 @@ client.on(Events.MessageCreate, async message => {
       if (!data || data.length < 1) {
         database.set('loreList', startLoreList);
       } else {
-        let index = null; // tìm trong lore có 'search' ko
+        let index = null;
         data.every((item, i) => {
           if (search.toLowerCase().includes(item.search)) {
             index = i;
@@ -71,6 +71,7 @@ client.on(Events.MessageCreate, async message => {
           }
           return true;
         });
+
         if (index !== null) {
           if (!data[index].capture)
             return message.channel.send(data[index].lore);
@@ -78,7 +79,7 @@ client.on(Events.MessageCreate, async message => {
             files: [data[index].capture]
           });
         } else {
-          // ko có trong lore
+          // special lore
           if (search.includes('bot ngu')) {
             if (message.author.id === DEV_ID)
               return message.reply('Em xin lỗi <:pudency:392281550865039362>');
@@ -95,7 +96,7 @@ client.on(Events.MessageCreate, async message => {
       );
     }
   } else {
-    // dùng lệnh
+    // use command
     const args = message.content
       .slice(PREFIX.length)
       .trim()
@@ -104,7 +105,6 @@ client.on(Events.MessageCreate, async message => {
 
     const command =
       client.commands.get(commandName)
-    // console.log(chalk.bgBlue.black('import'), command.commandObj.name)
 
     if (!command) return;
     try {
