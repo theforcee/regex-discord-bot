@@ -58,7 +58,7 @@ client.on(Events.GuildMemberRemove, async member => {
 client.on(Events.MessageCreate, async message => {
   // normal chatting => get lore from db
   if (!message.content.startsWith(PREFIX) && message.author.id != OWNER_ID) {
-    let search = message.content.toLowerCase();
+    let content = message.content.toLowerCase();
     try {
       let data = await database.get('loreList');
       if (!data || data.length < 1) {
@@ -66,7 +66,8 @@ client.on(Events.MessageCreate, async message => {
       } else {
         let index = null;
         data.every((item, i) => {
-          if (search.toLowerCase().includes(item.search)) {
+          let prefix = content.length === item?.search?.length ? "" : " "
+          if (content.toLowerCase().includes(prefix + item?.search?.toLowerCase())) {
             index = i;
             return false;
           }
@@ -82,12 +83,12 @@ client.on(Events.MessageCreate, async message => {
           });
         } else {
           // special lore
-          if (search.includes('bot ngu')) {
+          if (content.includes('bot ngu')) {
             if (message.author.id === DEV_ID)
               return message.reply('Em xin lỗi <:pudency:392281550865039362>');
             return message.reply('Ngu con mẹ bạn <:ngr:421524933781356546>');
           }
-          if (search.includes('câm mồm'))
+          if (content.includes('câm mồm'))
             return message.channel.send(getCammom(message));
         }
       }
@@ -114,7 +115,7 @@ client.on(Events.MessageCreate, async message => {
 
       // add to log
       database.get('dataLog').then(list => {
-        if (!list || list.lenght < 1) {
+        if (!list || list?.length < 1) {
           database.set('dataLog', initLogs);
         } else {
           let now = new Date().toLocaleString('vi-VN', {
