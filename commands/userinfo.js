@@ -13,7 +13,7 @@ export const commandObj = {
 
     if (args[0]) {
       let member = message.mentions.members.first();
-      console.log(chalk.bgRed.black('member'), message.client.user)
+      console.log(chalk.bgRed.black('member'), member.presence)
 
       if (member) {
         let embed = new Discord.EmbedBuilder()
@@ -28,7 +28,7 @@ export const commandObj = {
           .addFields({ name: '**Username:**', value: `${member.user.username}`, inline: true })
           .addFields({ name: '**Discriminator:**', value: `${member.user.discriminator}`, inline: true })
           .addFields({ name: '**ID:**', value: `${member.user.id}`, inline: true })
-          .addFields({ name: '**Status:**', value: `${member.presence.status}`, inline: true })
+          .addFields({ name: '**Status:**', value: `${member.presence?.status}`, inline: true })
           .addFields({ name: '**Joined On:**', value: `${member.joinedAt.toLocaleString()}`, inline: true })
           .addFields({ name: '**Created On:**', value: `${member.user.createdAt.toLocaleString()}`, inline: true })
           .setDescription(`${member.roles.cache.map(role => role.toString()).join(' ')}`)
