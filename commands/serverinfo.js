@@ -7,6 +7,7 @@ export const commandObj = {
   category: 'Utility',
   async execute(message, args) {
     let owner = await message.guild.fetchOwner()
+    let members = await message.guild.members.fetch({ withPresences: true })
 
     let defaulEmbed = new EmbedBuilder()
       .setColor("fffff")
@@ -18,6 +19,8 @@ export const commandObj = {
       })
       .addFields({ name: "**Guild Owner: **", value: `${owner.user.tag}`, inline: true })
       .addFields({ name: "**Member Count: **", value: `${message.guild.memberCount}`, inline: true })
+      .addFields({ name: "**Total Members: **", value: `${members.filter(member => !member.user.bot).size}`, inline: true })
+      .addFields({ name: "**Total Bots: **", value: `${members.filter(member => member.user.bot).size}`, inline: true })
       .addFields({ name: "**Total Channels: **", value: `${message.guild.channels.cache.size}`, inline: true })
       .addFields({ name: "**Total Text Channels: **", value: message.guild.channels.cache.filter(ch => ch.type === ChannelType.GuildText).size + '', inline: true })
       .addFields({ name: "**Total Voice Channels: **", value: message.guild.channels.cache.filter(ch => ch.type === ChannelType.GuildVoice).size + '', inline: true })
