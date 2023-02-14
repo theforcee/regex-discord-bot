@@ -4,7 +4,7 @@ import { CLIENT_TOKEN } from '../constant.js';
 export const commandObj = {
   name: 'avm',
   description: 'Xem avatar member trong server',
-  usage: 'avm [mention]',
+  usage: 'avm <mention>',
   category: 'Utility',
   guildOnly: true,
   async execute(message, args) {
@@ -26,9 +26,9 @@ export const commandObj = {
 
           if (memberAvatar !== undefined && memberAvatar !== null) {
             let url = `https://cdn.discordapp.com/guilds/${member.guild.id}/users/${member.user.id}/avatars/${memberAvatar}.webp?size=256`;
-            message.channel.send('', { files: [url] });
+            message.channel.send(' ', { files: [url] });
           } else {
-            message.channel.send(member.user.displayAvatarURL({ dynamic: true, size: 256 }));
+            message.channel.send(member.user.displayAvatarURL({ dynamic: true, size: 256 }) + ' ');
           }
         } catch (err) {
           console.log(err.message);
