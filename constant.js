@@ -52,11 +52,11 @@ export const initLore = [
   },
   {
     "search": "mén là ai",
-    "lore": `Mén - Tein- Thách đấu fake - người nên tìm kiếm vào cuối mùa\nTrùm loser, tán đứa nào đứa đấy có người yêu ngay sau đó mà không phải là mén.\nLà một thanh niên biết cam chịu, đầu đội sừng, chân đạp vỏ.  Hiên ngang ̶c̶̶h̶̶ế̶̶t̶ đứng giữa đất trời <:sure:1075000696706977822>`,
+    "lore": `Mén - Tein- Thách đấu fake - người nên tìm kiếm vào cuối mùa\nTrùm loser, tán đứa nào đứa đấy có người yêu ngay sau đó mà không phải là mén.\nLà một thanh niên biết cam chịu, đầu đội sừng, chân đạp vỏ.  Hiên ngang ̶c̶̶h̶̶ế̶̶t̶ đứng giữa đất trời <:sure:392281548054986753>`,
   },
   {
     "search": "minh là ai",
-    "lore": "Minh hay Phúc thì đó vẫn là 1 ẩn số nhưng có 1 sự thật là xv nhà giàu giả chết - Chuyên xem stream chùa không donate. Ngoài ra  cái tên này được thay cho tính từ chỉ sự occhos hoặc bộ phận sinh dục nữ. VD: sao mày minh thế? Cười tụt minh <:cuoiminh:1075000861522149427>",
+    "lore": "Minh hay Phúc thì đó vẫn là 1 ẩn số nhưng có 1 sự thật là xv nhà giàu giả chết - Chuyên xem stream chùa không donate. Ngoài ra  cái tên này được thay cho tính từ chỉ sự occhos hoặc bộ phận sinh dục nữ. VD: sao mày minh thế? Cười tụt minh <a:cuoiminh:849672910071398400>",
   },
   {
     "search": "nhi là ai",
@@ -64,7 +64,7 @@ export const initLore = [
   },
   {
     "search": "sú là ai",
-    "lore": "Có thể gọi là nhà cơ to - giàu nhất nhì clan, con bố tướng,  nhưng không vì thế mà lười biếng, anh hiện tại đang là coder nghìn đô, cùng với đó, anh có một bộ sưu tập ảnh gái xinh cấp 2, cấp 3 mơn mởn, hãy gọi anh là ANH SÚ, nếu chửi xin hãy chửi là CONĐĨANHSÚ <:quada:1075001101499252736>",
+    "lore": "Có thể gọi là nhà cơ to - giàu nhất nhì clan, con bố tướng,  nhưng không vì thế mà lười biếng, anh hiện tại đang là coder nghìn đô, cùng với đó, anh có một bộ sưu tập ảnh gái xinh cấp 2, cấp 3 mơn mởn, hãy gọi anh là ANH SÚ, nếu chửi xin hãy chửi là CONĐĨANHSÚ <:quada:827003943505625138>",
   },
   {
     "search": "việt là ai",
@@ -72,7 +72,7 @@ export const initLore = [
   },
   {
     "search": "yu là ai",
-    "lore": "Quận chúa Bắc Linh - Park sĩ thất nghiệp - làm vì đam mê vì nghỉ việc rồi ai mà trả lương <:sosad:1075001392621703268>",
+    "lore": "Quận chúa Bắc Linh - Park sĩ thất nghiệp - làm vì đam mê vì nghỉ việc rồi ai mà trả lương <:sosad:392281549342638082>",
   },
   {
     "search": "huy là ai",
@@ -81,7 +81,7 @@ export const initLore = [
   },
   {
     "search": "zane là ai",
-    "lore": `Zane - Nhà tìnk rục học <:sexy:1075001593742762004>\nNếu một ngày bạn mở mắt ra và thấy mình đã là người tối cổ. Hãy tìm gặp ngay như like fật tổ Zane để thỉnh chân kink bản mới nhất đem về tu luyện <:stick:1075001670586597426>`,
+    "lore": `Zane - Nhà tìnk rục học <:sexy:393985422470021131>\nNếu một ngày bạn mở mắt ra và thấy mình đã là người tối cổ. Hãy tìm gặp ngay như like fật tổ Zane để thỉnh chân kink bản mới nhất đem về tu luyện <:stick:392281551163097088>`,
   },
   {
     "search": "cóc là ai",
@@ -98,7 +98,7 @@ export const initLore = [
   },
   {
     "search": "vũ là ai",
-    "lore": "Đẹp trai sợ vợ, hay afk đi xúc cứt cho mèo, rửa đít cho con, địa vị trong nhà thuộc Top 4 đứng sau Con vợ, con trai và con mòe ... thường bị cà cắn vào đít <:sadd:1075001956373905408>",
+    "lore": "Đẹp trai sợ vợ, hay afk đi xúc cứt cho mèo, rửa đít cho con, địa vị trong nhà thuộc Top 4 đứng sau Con vợ, con trai và con mòe ... thường bị cà cắn vào đít <:sadd:410255234099707906>",
   },
   {
     "search": "chen là ai",
@@ -119,7 +119,7 @@ export const initLore = [
   },
   {
     "search": "trẩu là ai",
-    "lore": "Xúc xinh bỏ bạn giữa bầy địch :doubt~1: , Chuyên gia ăn bánh. Bằng chứng cho khỏi cãi: https://www.youtube.com/watch?v=VVHh4z7QalU",
+    "lore": "Xúc xinh bỏ bạn giữa bầy địch <:doubt:392281546687643649> , Chuyên gia ăn bánh. Bằng chứng cho khỏi cãi: https://www.youtube.com/watch?v=VVHh4z7QalU",
   },
   {
     "search": "bét ad là ai",
@@ -132,7 +132,7 @@ export const initLore = [
   },
   {
     "search": "đúng là thứ",
-    "lore": "Thứ này hả <:look_down:1075002586589036596>",
+    "lore": "Thứ này hả <:look_down:392281546725523458>",
     "capture": "https://media.discordapp.net/attachments/392248883436322828/969590336240357376/11.png"
   },
   {
@@ -149,15 +149,15 @@ export const initLore = [
   },
   {
     "search": "8 chữ vàng",
-    "lore": "tranh công - chối tội - đổ lỗi - thanh minh <:doubt:1075002836372430888>",
+    "lore": "tranh công - chối tội - đổ lỗi - thanh minh <:doubt:392281546687643649>",
   },
   {
     "search": "tam đại chó",
-    "lore": `1. Bake Củ đụ <:doge:1075002969105367121> \n2. Truke Hột cà <:doge:1075002969105367121> \n3. Nake Minh phốc <:doge:1075002969105367121>`
+    "lore": `1. Bake Củ đụ <:doge:428416714946904074> \n2. Truke Hột cà <:doge:428416714946904074> \n3. Nake Minh phốc <:doge:428416714946904074>`
   },
   {
     "search": "tứ đại ngu",
-    "lore": `1: Tfuck <:sogood:1075003123153780776>\n2: Bô <:sogood:1075003123153780776> \n3: Vẩu <:sogood:1075003123153780776> \n4: Penis <:sogood:1075003123153780776>`
+    "lore": `1: Tfuck <:sogood:392281547438292994>\n2: Bô <:sogood:392281547438292994> \n3: Vẩu <:sogood:392281547438292994> \n4: Penis <:sogood:392281547438292994>`
   },
   {
     "search": "thằng tên trung",
@@ -193,7 +193,7 @@ export const initLore = [
   },
   {
     "search": "gì căng",
-    "lore": "Đúng rồi, làm gì mà căng <:doge:1075002969105367121> ",
+    "lore": "Đúng rồi, làm gì mà căng <:doge:428416714946904074> ",
   },
   {
     "search": "mai là ai",
@@ -202,8 +202,7 @@ export const initLore = [
   },
   {
     "search": "do anything",
-    "lore": "KWANG do everything",
-    "capture": "<:pmc1:1075004166382034985>"
+    "lore": "KWANG do everything \n <a:pmc1:920194601040613394>",
   },
 ]
 
