@@ -2,7 +2,7 @@ import chalk from 'chalk';
 import Discord, { ActivityType, Events, GatewayIntentBits } from 'discord.js';
 import { readdirSync } from 'fs';
 import { QuickDB } from "quick.db";
-import { CLIENT_TOKEN, DEV_ID, OWNER_ID, PREFIX, initLogs, initLore } from './constant.js';
+import { CLIENT_TOKEN, DEV_ID, initLogs, initLore, JOIN_CHANNEL_ID, LEAVE_CHANNEL_ID, OWNER_ID, PREFIX } from './constant.js';
 import { keepAlive } from './server.js';
 import { getCammom } from './utils.js';
 
