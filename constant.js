@@ -160,6 +160,10 @@ export const initLore = [
     "lore": `1: Tfuck <:sogood:392281547438292994>\n2: Bô <:sogood:392281547438292994> \n3: Vẩu <:sogood:392281547438292994> \n4: Penis <:sogood:392281547438292994>`
   },
   {
+    "search": "tứ đại vua",
+    "lore": `1: Anh Kwang\n2: Núp\n3: Hoàng Nguyễn Đức Quang\n4: Rùa tập chạy\n4. Ốc Nấu Chuối Đậu`
+  },
+  {
     "search": "thằng tên trung",
     "lore": "https://media.discordapp.net/attachments/392248883436322828/970926009958420480/unknown.png",
   },

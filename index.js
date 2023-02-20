@@ -65,9 +65,10 @@ client.on(Events.MessageCreate, async message => {
         database.set('loreList', initLore);
       } else {
         let index = null;
+        const baseRegex = `^\\s*loreSearch|.+( loreSearch)`
         data.every((item, i) => {
-          let prefix = content.length === item?.search?.length ? "" : " "
-          if (content.toLowerCase().includes(prefix + item?.search?.toLowerCase())) {
+          const regexForLore = new RegExp(baseRegex.replaceAll('loreSearch', item.search), 'gmi');
+          if (regexForLore.test(content)) {
             index = i;
             return false;
           }
