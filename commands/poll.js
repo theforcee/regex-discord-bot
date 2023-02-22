@@ -4,7 +4,7 @@ export const commandObj = {
   name: 'poll',
   description: 'Sends a yes or no poll',
   usage: 'poll <question>',
-  category: 'Utility',
+  category: 'Fun',
   guildOnly: true,
   async execute(message, args) {
     if (!args.join(" ")) return message.reply("Please enter a question for the poll!")

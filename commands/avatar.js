@@ -1,7 +1,7 @@
 export const commandObj = {
   name: 'av',
   description: 'Xem avatar to thật to',
-  usage: 'av [mention]',
+  usage: 'av <mention>',
   category: 'Utility',
   guildOnly: true,
   async execute(message, args) {
