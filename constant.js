@@ -48,7 +48,7 @@ export const initLore = [
   },
   {
     "search": "nam đần là ai",
-    "lore": "Kẻ làm chủ hơi thở của quỷ, Kẻ thù của loài Bò, từng book vé ra 34 để xiên Thợ Ảnh nhưng không thành, thường giận hờn vu vơ, tốt tính hay tư vấn những pha đi vào lòng đất <:pphe:1074997214964895874>",
+    "lore": "Kẻ làm chủ hơi thở của quỷ, Kẻ thù của loài Bò, từng book vé ra 34 để xiên Thợ Ảnh nhưng không thành, thường giận hờn vu vơ, tốt tính hay tư vấn những pha đi vào lòng đất <:pphe:846597495408427009>",
   },
   {
     "search": "mén là ai",
@@ -116,6 +116,7 @@ export const initLore = [
   {
     "search": "khá là ai",
     "lore": "Bắc Ánh, nam Khá. Biệt danh Khá Không Ngủ, nổi danh trong làng địt dạo, khách hàng lớn của Tinder, ăn nhậu vô đối xứ Nake, sở thích là đớp GA và đấm Mèo.",
+    "capture": "https://media.discordapp.net/attachments/392248883436322828/1084761838585118761/image.png"
   },
   {
     "search": "trẩu là ai",
@@ -207,6 +208,14 @@ export const initLore = [
   {
     "search": "do anything",
     "lore": "KWANG do everything \n <a:pmc1:920194601040613394>",
+  },
+  {
+    "search": "34 đấm",
+    "lore": "https://imgur.com/a/LBAGIIw",
+  },
+  {
+    "search": "ping ít thôi",
+    "lore": "https://media.discordapp.net/attachments/392248883436322828/1087304659795984494/unknown.png",
   },
 ]
 
