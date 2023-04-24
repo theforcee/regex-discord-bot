@@ -113,7 +113,7 @@ client.on(Events.MessageCreate, async message => {
 
     if (!command) return;
 
-    if (message.member.permissions.has(PermissionFlagsBits.ReadMessageHistory))
+    if (!message.member.permissions.has(PermissionFlagsBits.ReadMessageHistory))
       return message.reply("Vất xục thì cút <:ngr:421524933781356546>")
 
     try {
