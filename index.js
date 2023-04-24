@@ -7,7 +7,7 @@ import { keepAlive } from './server.js';
 import { getCammom } from './utils.js';
 
 const database = new QuickDB();
-const BANNED_ROLE_ID = 430576964999577600n; // Hố
+const FORBIDDEN_ROLE_ID = '430576964999577600'; // Role Hố
 const { Client, Collection } = Discord;
 
 const client = new Client({
@@ -113,7 +113,7 @@ client.on(Events.MessageCreate, async message => {
 
     if (!command) return;
 
-    if (!message.member.permissions.has(PermissionFlagsBits.ReadMessageHistory))
+    if (message.member.roles.cache.has(FORBIDDEN_ROLE_ID))
       return message.reply("Vất xục thì cút <:ngr:421524933781356546>")
 
     try {
