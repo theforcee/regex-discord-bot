@@ -1,5 +1,5 @@
 import chalk from 'chalk';
-import Discord, { ActivityType, Events, GatewayIntentBits } from 'discord.js';
+import Discord, { ActivityType, Events, GatewayIntentBits, PermissionFlagsBits } from 'discord.js';
 import { readdirSync } from 'fs';
 import { QuickDB } from "quick.db";
 import { CLIENT_TOKEN, DEV_ID, initLogs, initLore, JOIN_CHANNEL_ID, LEAVE_CHANNEL_ID, OWNER_ID, PREFIX } from './constant.js';
@@ -7,6 +7,7 @@ import { keepAlive } from './server.js';
 import { getCammom } from './utils.js';
 
 const database = new QuickDB();
+const BANNED_ROLE_ID = 430576964999577600n; // Hố
 const { Client, Collection } = Discord;
 
 const client = new Client({
@@ -111,6 +112,10 @@ client.on(Events.MessageCreate, async message => {
       client.commands.get(commandName)
 
     if (!command) return;
+
+    if (message.member.permissions.has(PermissionFlagsBits.ReadMessageHistory))
+      return message.reply("Vất xục thì cút <:ngr:421524933781356546>")
+
     try {
       command.execute(message, args, client);
 
