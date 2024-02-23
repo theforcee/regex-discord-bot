@@ -35,8 +35,7 @@ export const initLore = [
   },
   {
     "search": "thằng 79",
-    "lore": "",
-    "capture": "https://media.discordapp.net/attachments/882451550369370132/973407885419741204/unknown.png"
+    "lore": "https://media.discordapp.net/attachments/882451550369370132/973407885419741204/unknown.png"
   },
   {
     "search": "tôm là ai",
@@ -184,13 +183,11 @@ export const initLore = [
   },
   {
     "search": "1 cơ hội",
-    "lore": "",
-    "capture": "https://cdn.discordapp.com/attachments/882451550369370132/957956780820922398/unknown.png"
+    "lore": "https://cdn.discordapp.com/attachments/882451550369370132/957956780820922398/unknown.png"
   },
   {
     "search": "thằng tên đức",
-    "lore": "",
-    "capture": "https://media.discordapp.net/attachments/882451550369370132/955743907180863569/519BA6C6-B2DB-411F-B8B5-43FF776393B7.png?width=881&height=551"
+    "lore": "https://media.discordapp.net/attachments/882451550369370132/955743907180863569/519BA6C6-B2DB-411F-B8B5-43FF776393B7.png?width=881&height=551"
   },
   {
     "search": "joley là ai",
@@ -206,6 +203,11 @@ export const initLore = [
     "capture": "https://images-ext-1.discordapp.net/external/J9q0kjc90qLXaCgZelBdaPiEZbiMRJou3XUbk_4HsDo/https/i.imgur.com/KxLaFe3.png"
   },
   {
+    "search": "an là ai",
+    "lore": "mòe cụt chân, bà chủ 3 căn resort, còn nguyên quả đồi đang đợi 34 về để kế nghiệp, kỹ năng bóp team thượng thừa",
+    "capture": "https://cdn.discordapp.com/attachments/392248883436322828/1138772037205241927/13-6_VN2-53673373_01.webm?ex=655dcf9b&is=654b5a9b&hm=e3a968d008b565f776547818a0e6cbc6159251bfd41dc1c91da3021ac1754dfc&"
+  },
+  {
     "search": "do anything",
     "lore": "KWANG do everything \n <a:pmc1:920194601040613394>",
   },
@@ -216,6 +218,18 @@ export const initLore = [
   {
     "search": "ping ít thôi",
     "lore": "https://media.discordapp.net/attachments/392248883436322828/1087304659795984494/unknown.png",
+  },
+  {
+    "search": "cả mày nữa",
+    "lore": "https://media.discordapp.net/attachments/882451550369370132/1163415115329196073/image.png?ex=6548b842&is=65364342&hm=d8f5c551d3c25c0f9202c6ea4cdbb0efbf36f1527f4daf21f54b4e283a785264&=",
+  },
+  {
+    "search": "kịch bản ấy đẹp",
+    "lore": "https://media.discordapp.net/attachments/844225405086990380/1178894495543197756/photo-3-1683621702471145572295.png?ex=65cadc8e&is=65b8678e&hm=c700478bbbb2f66aa086479c00cc095ae375a240de6ca970b5eef1f1d1432e0c&=&format=webp&quality=lossless&width=580&height=326",
+  },
+  {
+    "search": "bọn 36",
+    "lore": "bọn <:eat:392281551217491969> 🍀 🛠 🚞",
   },
 ]
 

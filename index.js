@@ -77,11 +77,9 @@ client.on(Events.MessageCreate, async message => {
         });
 
         if (index !== null) {
-          if (!data[index].capture)
-            return message.channel.send(data[index].lore);
+          const { capture, lore } = data[index]
           return message.channel.send({
-            content: data[index].lore,
-            files: [data[index].capture]
+            content: `${lore} ${capture ?? ""}`,
           });
         } else {
           // special lore
