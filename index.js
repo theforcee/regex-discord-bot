@@ -2,9 +2,13 @@ import chalk from 'chalk';
 import Discord, { ActivityType, Events, GatewayIntentBits, PermissionFlagsBits } from 'discord.js';
 import { readdirSync } from 'fs';
 import { QuickDB } from "quick.db";
-import { CLIENT_TOKEN, DEV_ID, initLogs, initLore, JOIN_CHANNEL_ID, LEAVE_CHANNEL_ID, OWNER_ID, PREFIX } from './constant.js';
+import { CLIENT_TOKEN, DEV_ID, initLogs, initLore, JOIN_CHANNEL_ID, LEAVE_CHANNEL_ID, MONGODB_URI, OWNER_ID, PREFIX } from './constant.js';
 import { keepAlive } from './server.js';
 import { getCammom } from './utils.js';
+import Lore from './models/Lore.js';
+import mongoose from 'mongoose';
+
+mongoose.connect(MONGODB_URI);
 
 const database = new QuickDB();
 const FORBIDDEN_ROLE_ID = '430576964999577600'; // Role Hố
@@ -61,36 +65,42 @@ client.on(Events.MessageCreate, async message => {
   if (!message.content.startsWith(PREFIX) && message.author.id != OWNER_ID) {
     let content = message.content.toLowerCase();
     try {
-      let data = await database.get('loreList');
-      if (!data || data.length < 1) {
-        database.set('loreList', initLore);
-      } else {
-        let index = null;
-        const baseRegex = `^\\s*loreSearch|.+( loreSearch)`
-        data.every((item, i) => {
-          const regexForLore = new RegExp(baseRegex.replaceAll('loreSearch', item.search), 'gmi');
-          if (regexForLore.test(content)) {
-            index = i;
-            return false;
-          }
-          return true;
-        });
+      let data = await Lore.find({}, { search: 1, lore: 1, capture: 1 })
+        .sort({ createdAt: 1 })
+        .lean();
 
-        if (index !== null) {
-          const { capture, lore } = data[index]
-          return message.channel.send({
-            content: `${lore} ${capture ?? ""}`,
-          });
-        } else {
-          // special lore
-          if (content.includes('bot ngu')) {
-            if (message.author.id === DEV_ID)
-              return message.reply('Em xin lỗi <:pudency:392281550865039362>');
-            return message.reply('Ngu con mẹ bạn <:ngr:421524933781356546>');
-          }
-          if (content.includes('câm mồm'))
-            return message.channel.send(getCammom(message));
+      if (!data || data.length < 1) {
+        await Lore.insertMany(initLore);
+        data = await Lore.find({}, { search: 1, lore: 1, capture: 1 })
+          .sort({ createdAt: 1 })
+          .lean();
+      }
+
+      let index = null;
+      const baseRegex = `^\\s*loreSearch|.+( loreSearch)`
+      data.every((item, i) => {
+        const regexForLore = new RegExp(baseRegex.replaceAll('loreSearch', item.search), 'gmi');
+        if (regexForLore.test(content)) {
+          index = i;
+          return false;
         }
+        return true;
+      });
+
+      if (index !== null) {
+        const { capture, lore } = data[index]
+        return message.channel.send({
+          content: `${lore} ${capture ?? ""}`,
+        });
+      } else {
+        // special lore
+        if (content.includes('bot ngu')) {
+          if (message.author.id === DEV_ID)
+            return message.reply('Em xin lỗi <:pudency:392281550865039362>');
+          return message.reply('Ngu con mẹ bạn <:ngr:421524933781356546>');
+        }
+        if (content.includes('câm mồm'))
+          return message.channel.send(getCammom(message));
       }
     } catch (error) {
       console.log(error);

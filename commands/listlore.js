@@ -1,6 +1,21 @@
 import { EmbedBuilder } from 'discord.js';
-import { QuickDB } from "quick.db";
-const db = new QuickDB();
+import Lore from '../models/Lore.js';
+
+const CHUNK_SIZE = 30;
+
+function formatLoreRow(item, index) {
+  const idx = index.toString().padStart(2, '0');
+  const captureIcon = item.capture ? '📷' : '—';
+  return `\`${idx}\` ${item.search} • ${captureIcon}`;
+}
+
+function chunkList(list, size = CHUNK_SIZE) {
+  const chunks = [];
+  for (let i = 0; i < list.length; i += size) {
+    chunks.push(list.slice(i, i + size));
+  }
+  return chunks;
+}
 
 export const commandObj = {
   name: 'listlore',
@@ -8,28 +23,29 @@ export const commandObj = {
   usage: 'listlore',
   category: 'Utility',
   guildOnly: true,
-  async execute(message, args) {
+  async execute(message) {
+    try {
+      const list = await Lore.find({}, { search: 1, capture: 1 })
+        .sort({ createdAt: 1 })
+        .lean();
 
-    await db.get("loreList").then(list => {
       if (list.length < 1) return message.channel.send("Chưa có lore nào!");
 
-      let indexs = list.map((item, index) => index).join('\n');
+      const rows = list.map(formatLoreRow);
+      const chunks = chunkList(rows);
 
-      let searchs = list.map(item => item.search).join('\n');
+      for (let i = 0; i < chunks.length; i++) {
+        const embed = new EmbedBuilder()
+          .setTitle("Danh sách lore hiện có")
+          .setColor('Green')
+          .setDescription(chunks[i].join('\n'))
+          .setFooter({ text: `Trang ${i + 1}/${chunks.length} • Tổng: ${list.length}` });
 
-      let catures = list.map(item => item.capture ? 'yes' : 'no').join('\n');
-
-      let loreEmbed = new EmbedBuilder()
-        .setTitle("Danh sách lore hiện có")
-        .setColor('Green')
-        .addFields({ name: 'Index', value: indexs, inline: true })
-        .addFields({ name: 'Search', value: searchs, inline: true })
-        .addFields({ name: 'Has Capture', value: catures, inline: true })
-
-      message.channel.send({ embeds: [loreEmbed] })
-    }).catch(error => {
-      message.channel.send('Fail to get lore list: ', error)
-    })
-
+        await message.channel.send({ embeds: [embed] });
+      }
+    } catch (error) {
+      console.log('listlore error:', error);
+      message.channel.send('Fail to get lore list, thử lại sau!');
+    }
   }
 }

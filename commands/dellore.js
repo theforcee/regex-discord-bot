@@ -1,7 +1,6 @@
 import { PermissionFlagsBits } from "discord.js";
-import { QuickDB } from "quick.db";
 import { PREFIX } from "../constant.js";
-const db = new QuickDB();
+import Lore from '../models/Lore.js';
 
 export const commandObj = {
   name: 'dellore',
@@ -18,15 +17,20 @@ export const commandObj = {
 
     if (!args || isNaN(index)) return message.reply(`Nhập index cho cẩn thận\n Đã xoá không thể undo <:doge:428416714946904074>\n**${PREFIX}dellore <index>**`)
 
-    db.get("loreList").then(list => {
+    try {
+      const list = await Lore.find({}, { search: 1 })
+        .sort({ createdAt: 1 })
+        .lean();
+
       if (list.length > index) {
-        let lore = list[index];
-        list.splice(index, 1);
-        db.set("loreList", list);
+        const lore = list[index];
+        await Lore.deleteOne({ _id: lore._id });
         return message.channel.send(`Xoá lore **[${index}]: ${lore.search}** thành công`);
       }
       return message.channel.send(`Index **${index}** không đúng`);
-    })
-
+    } catch (error) {
+      console.log('dellore error:', error);
+      return message.channel.send('Không thể xoá lore, thử lại sau!');
+    }
   }
 }

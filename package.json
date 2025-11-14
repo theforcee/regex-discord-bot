@@ -21,6 +21,7 @@
     "fs": "^0.0.1-security",
     "googleapis": "^110.0.0",
     "mathjs": "^11.5.1",
+    "mongoose": "^8.19.4",
     "quick.db": "^9.0.8"
   }
 }

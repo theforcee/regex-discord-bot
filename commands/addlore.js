@@ -1,8 +1,6 @@
 import { PermissionFlagsBits } from "discord.js";
-import { QuickDB } from "quick.db";
 import { PREFIX } from '../constant.js';
-
-const db = new QuickDB();
+import Lore from '../models/Lore.js';
 
 export const commandObj = {
   name: 'addlore',
@@ -20,19 +18,21 @@ export const commandObj = {
       return message.channel.send(`Thêm đúng cú pháp dùm <:ngr:421524933781356546>\n**${PREFIX}addlore <keyword> ; <lore> ; [capture]** \n [capture] là link ảnh`);
     }
 
-    db.get("loreList").then(list => {
-      let search = temp[0].toLowerCase().trim();
-      // check keyword exists
-      let keywords = list.map(item => item.search);
-      if (keywords.indexOf(search) !== -1) return message.reply(`keyword **${search}** đã tồn tại`);
-      // create new lore
-      let newLore = {
-        search: search,
-        lore: temp[1].trim(),
-        capture: temp[2] ? temp[2].trim() : null
+    try {
+      const search = temp[0].toLowerCase().trim();
+      const loreText = temp[1].trim();
+      const capture = temp[2] ? temp[2].trim() : null;
+
+      const existing = await Lore.findOne({ search });
+      if (existing) {
+        return message.reply(`keyword **${search}** đã tồn tại`);
       }
-      list.push(newLore);
-      db.set("loreList", list).then(() => message.channel.send(`Thêm lore **${search}** thành công`));
-    })
+
+      await Lore.create({ search, lore: loreText, capture });
+      return message.channel.send(`Thêm lore **${search}** thành công`);
+    } catch (error) {
+      console.log('addlore error:', error);
+      return message.channel.send('Không thể thêm lore, thử lại sau!');
+    }
   }
 }

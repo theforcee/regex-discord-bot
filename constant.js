@@ -8,6 +8,7 @@ export const LEAVE_CHANNEL_ID = process.env.LEAVE_CHANNEL_ID;
 export const DEV_ID = process.env.DEV_ID;
 export const OWNER_ID = process.env.OWNER_ID;
 export const PREFIX = '.';
+export const MONGODB_URI = process.env.MONGODB_URI;
 
 export const initLore = [
   {
