@@ -12,6 +12,8 @@ search:
     - json
 
 server:
+  secret_key: __SEARXNG_SECRET_JSON__
+__SEARXNG_BASE_URL_LINE__
   bind_address: "0.0.0.0"
   limiter: false
   public_instance: false
