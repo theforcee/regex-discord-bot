@@ -65,6 +65,8 @@ a fresh redeploy after saving the variables.
 - Image proxy: enabled
 - Image search prioritizes `google images`, with `bing images` and
   `duckduckgo images` kept as fallback engines.
+- Per-engine language overrides are intentionally not set because some image
+  engines, including `duckduckgo images`, do not support `vi-VN` at startup.
 - Slower/less relevant image engines (`qwant images`, `brave.images`,
   `yandex images`) are disabled by default.
 

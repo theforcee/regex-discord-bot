@@ -41,19 +41,16 @@ outgoing:
 engines:
   - name: google images
     disabled: false
-    language: vi-VN
     timeout: 4.0
     weight: 3.0
 
   - name: bing images
     disabled: false
-    language: vi-VN
     timeout: 3.0
     weight: 0.8
 
   - name: duckduckgo images
     disabled: false
-    language: vi-VN
     timeout: 3.0
     weight: 0.8
 
