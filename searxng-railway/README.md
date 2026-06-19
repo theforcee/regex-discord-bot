@@ -63,6 +63,42 @@ a fresh redeploy after saving the variables.
 - UI locale: `vi`
 - JSON output: enabled
 - Image proxy: enabled
+- Image search prioritizes `google images`, with `bing images` and
+  `duckduckgo images` kept as fallback engines.
+- Slower/less relevant image engines (`qwant images`, `brave.images`,
+  `yandex images`) are disabled by default.
+
+## Discord bot image tuning
+
+The bot defaults to:
+
+```env
+SEARXNG_IMAGE_ENGINES=google images;bing images,duckduckgo images
+SEARXNG_LANGUAGE=vi-VN
+```
+
+Semicolon (`;`) separates retry groups. With the default above, the bot tries
+Google Images first. If that returns no usable image results or times out, it
+tries Bing Images + DuckDuckGo Images.
+
+If Google Images becomes slow or blocked from Railway, change the bot service
+variable to a direct fallback group and redeploy:
+
+```env
+SEARXNG_IMAGE_ENGINES=bing images,duckduckgo images
+```
+
+For ambiguous Vietnamese queries like `binz`, SearXNG still does not have
+Google's personal/location signals. More specific queries such as `binz ca sĩ`
+or `binz rapper` will be more reliable. If this bot is mostly used for
+Vietnamese people/topics, you can also set:
+
+```env
+SEARXNG_QUERY_SUFFIX=việt nam
+```
+
+The bot will first search the original query, then retry with the suffix only if
+the original query has no usable image result.
 
 ## Notes
 
