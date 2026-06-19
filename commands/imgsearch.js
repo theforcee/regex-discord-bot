@@ -1,11 +1,18 @@
 import axios from 'axios';
-import { PREFIX, SEARXNG_BASE_URL } from '../constant.js';
+import {
+  PREFIX,
+  SEARXNG_BASE_URL,
+  SEARXNG_IMAGE_ENGINES,
+  SEARXNG_LANGUAGE,
+  SEARXNG_QUERY_SUFFIX,
+} from '../constant.js';
 import Discord from 'discord.js';
 
 const VALID_PROTOCOLS = new Set(['http:', 'https:']);
 const IMAGE_EXTENSION_REGEX = /\.(?:jpe?g|png|gif|webp|bmp|svg|ico|tiff?)($|\?)/i;
 const DEFAULT_ERROR_MESSAGE = 'Tớ đang gặp sự cố khi tìm ảnh, thử lại sau nhé.';
 const SEARXNG_SEARCH_PATH = 'search';
+const DEFAULT_SEARXNG_TIMEOUT_MS = 10000;
 
 class ImgSearchError extends Error {
   constructor(message, userMessage = DEFAULT_ERROR_MESSAGE) {
@@ -59,6 +66,34 @@ function getSearxngBaseUrl() {
   }
 }
 
+function getSearxngImageEngines() {
+  const engines = typeof SEARXNG_IMAGE_ENGINES === 'string' ? SEARXNG_IMAGE_ENGINES.trim() : '';
+  return engines || 'google images;bing images,duckduckgo images';
+}
+
+function getSearxngEngineGroups() {
+  const engineGroups = getSearxngImageEngines()
+    .split(';')
+    .map((engineGroup) => engineGroup.trim())
+    .filter(Boolean);
+
+  return engineGroups.length > 0 ? engineGroups : ['google images', 'bing images,duckduckgo images'];
+}
+
+function getSearxngLanguage() {
+  const language = typeof SEARXNG_LANGUAGE === 'string' ? SEARXNG_LANGUAGE.trim() : '';
+  return language || 'vi-VN';
+}
+
+function getSearxngQueryVariants(query) {
+  const suffix = typeof SEARXNG_QUERY_SUFFIX === 'string' ? SEARXNG_QUERY_SUFFIX.trim() : '';
+  if (!suffix || query.toLocaleLowerCase('vi').includes(suffix.toLocaleLowerCase('vi'))) {
+    return [query];
+  }
+
+  return [query, `${query} ${suffix}`];
+}
+
 function resolveUrl(rawUrl, baseUrl) {
   if (typeof rawUrl !== 'string' || rawUrl.trim().length === 0) {
     return null;
@@ -99,6 +134,14 @@ function pickImageResult(results, query, baseUrl) {
   return null;
 }
 
+function shouldTryNextSearxngEngine(error) {
+  const retryableCodes = new Set(['ECONNABORTED', 'ETIMEDOUT', 'ECONNRESET']);
+  if (retryableCodes.has(error?.code)) return true;
+
+  const statusCode = error?.response?.status;
+  return typeof statusCode === 'number' && statusCode >= 500;
+}
+
 function getSearxngErrorMessage(error) {
   const statusCode = error?.response?.status;
 
@@ -130,25 +173,54 @@ async function requestSearxngAPI(rawQuery = '') {
   try {
     const baseUrl = getSearxngBaseUrl();
     const requestUrl = new URL(SEARXNG_SEARCH_PATH, `${baseUrl}/`).toString();
-    const params = {
-      q: query,
-      categories: 'images',
-      format: 'json',
-      safesearch: 0,
-      pageno: 1,
-    };
+    const language = getSearxngLanguage();
+    const engineGroups = getSearxngEngineGroups();
+    const queryVariants = getSearxngQueryVariants(query);
+    let lastRetryableError = null;
 
-    const { data } = await axios.get(requestUrl, {
-      params,
-      headers: { Accept: 'application/json' },
-      timeout: 15000,
-    });
+    for (const searchQuery of queryVariants) {
+      for (const engines of engineGroups) {
+        try {
+          const params = {
+            q: searchQuery,
+            engines,
+            format: 'json',
+            language,
+            safesearch: 0,
+            pageno: 1,
+          };
 
-    if (!data || !Array.isArray(data.results) || data.results.length === 0) {
-      return null;
+          const { data } = await axios.get(requestUrl, {
+            params,
+            headers: { Accept: 'application/json' },
+            timeout: DEFAULT_SEARXNG_TIMEOUT_MS,
+          });
+
+          if (!data || !Array.isArray(data.results) || data.results.length === 0) {
+            console.log('[requestSearxngAPI] no image results from engines:', engines);
+            continue;
+          }
+
+          const result = pickImageResult(data.results, searchQuery, baseUrl);
+          if (result) {
+            return result;
+          }
+        } catch (error) {
+          if (!shouldTryNextSearxngEngine(error)) {
+            throw error;
+          }
+
+          lastRetryableError = error;
+          console.log('[requestSearxngAPI] retrying after engine failure:', engines, error?.code || error?.response?.status || error?.message);
+        }
+      }
     }
 
-    return pickImageResult(data.results, query, baseUrl);
+    if (lastRetryableError) {
+      throw lastRetryableError;
+    }
+
+    return null;
   } catch (error) {
     if (error instanceof ImgSearchError) {
       console.log('ERR requestSearxngAPI:', error.message);

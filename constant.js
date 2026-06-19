@@ -4,6 +4,9 @@ dotenv.config()
 export const CLIENT_TOKEN = process.env.CLIENT_TOKEN;
 export const GOOGLE_TOKEN = process.env.GOOGLE_TOKEN;
 export const SEARXNG_BASE_URL = process.env.SEARXNG_BASE_URL;
+export const SEARXNG_IMAGE_ENGINES = process.env.SEARXNG_IMAGE_ENGINES || 'google images;bing images,duckduckgo images';
+export const SEARXNG_LANGUAGE = process.env.SEARXNG_LANGUAGE || 'vi-VN';
+export const SEARXNG_QUERY_SUFFIX = process.env.SEARXNG_QUERY_SUFFIX || '';
 export const JOIN_CHANNEL_ID = process.env.JOIN_CHANNEL_ID;
 export const LEAVE_CHANNEL_ID = process.env.LEAVE_CHANNEL_ID;
 export const DEV_ID = process.env.DEV_ID;
