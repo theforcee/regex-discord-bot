@@ -23,6 +23,13 @@ This directory contains a Railway-ready SearXNG service for the Discord bot's
    SEARXNG_SECRET=<generate-a-long-random-string>
    ```
 
+   `SEARXNG_SECRET` is required at container startup. Generate a random string
+   without angle brackets, for example:
+
+   ```bash
+   openssl rand -hex 32
+   ```
+
 5. Generate a Railway public domain for the SearXNG service.
 6. After you have the domain, set this variable on the SearXNG service:
 
@@ -45,6 +52,9 @@ This directory contains a Railway-ready SearXNG service for the Discord bot's
    ```
 
 9. Redeploy/restart the Discord bot service.
+
+If the SearXNG service was already crashed before variables were added, trigger
+a fresh redeploy after saving the variables.
 
 ## Defaults
 
