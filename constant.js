@@ -3,6 +3,8 @@ dotenv.config()
 
 export const CLIENT_TOKEN = process.env.CLIENT_TOKEN;
 export const GOOGLE_TOKEN = process.env.GOOGLE_TOKEN;
+export const GOOGLE_CUSTOM_SEARCH_TOKEN = process.env.GOOGLE_CUSTOM_SEARCH_TOKEN || GOOGLE_TOKEN;
+export const GOOGLE_CUSTOM_SEARCH_CX = process.env.GOOGLE_CUSTOM_SEARCH_CX || process.env.GOOGLE_CSE_ID || '325ca177d251d4f0a';
 export const JOIN_CHANNEL_ID = process.env.JOIN_CHANNEL_ID;
 export const LEAVE_CHANNEL_ID = process.env.LEAVE_CHANNEL_ID;
 export const DEV_ID = process.env.DEV_ID;
