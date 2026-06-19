@@ -1,11 +1,11 @@
 import axios from 'axios';
-import { GOOGLE_CUSTOM_SEARCH_CX, GOOGLE_CUSTOM_SEARCH_TOKEN, PREFIX } from '../constant.js';
+import { PREFIX, SEARXNG_BASE_URL } from '../constant.js';
 import Discord from 'discord.js';
 
 const VALID_PROTOCOLS = new Set(['http:', 'https:']);
 const IMAGE_EXTENSION_REGEX = /\.(?:jpe?g|png|gif|webp|bmp|svg|ico|tiff?)($|\?)/i;
-const GOOGLE_CUSTOM_SEARCH_URL = 'https://customsearch.googleapis.com/customsearch/v1';
 const DEFAULT_ERROR_MESSAGE = 'Tớ đang gặp sự cố khi tìm ảnh, thử lại sau nhé.';
+const SEARXNG_SEARCH_PATH = 'search';
 
 class ImgSearchError extends Error {
   constructor(message, userMessage = DEFAULT_ERROR_MESSAGE) {
@@ -15,121 +15,150 @@ class ImgSearchError extends Error {
   }
 }
 
-function isLikelyImageUrl(url) {
+function isValidHttpUrl(url) {
   if (typeof url !== 'string' || url.length === 0) return false;
   try {
     const parsed = new URL(url);
-    if (!VALID_PROTOCOLS.has(parsed.protocol)) return false;
+    return VALID_PROTOCOLS.has(parsed.protocol);
   } catch {
     return false;
   }
+}
+
+function isLikelyImageUrl(url) {
+  if (!isValidHttpUrl(url)) return false;
   return IMAGE_EXTENSION_REGEX.test(url);
 }
 
-function getGoogleSearchConfig() {
-  const apiKey = typeof GOOGLE_CUSTOM_SEARCH_TOKEN === 'string' ? GOOGLE_CUSTOM_SEARCH_TOKEN.trim() : '';
-  const cx = typeof GOOGLE_CUSTOM_SEARCH_CX === 'string' ? GOOGLE_CUSTOM_SEARCH_CX.trim() : '';
+function getSearxngBaseUrl() {
+  const baseUrl = typeof SEARXNG_BASE_URL === 'string' ? SEARXNG_BASE_URL.trim() : '';
 
-  if (!apiKey) {
+  if (!baseUrl) {
     throw new ImgSearchError(
-      'Missing Google Custom Search API key',
-      'Bot chưa cấu hình Google Custom Search API key.'
+      'Missing SearXNG base URL',
+      'Bot chưa cấu hình SearXNG instance URL.'
     );
   }
 
-  if (!cx) {
+  try {
+    const parsed = new URL(baseUrl);
+    if (!VALID_PROTOCOLS.has(parsed.protocol)) {
+      throw new Error('Unsupported SearXNG URL protocol');
+    }
+
+    parsed.pathname = parsed.pathname.replace(/\/+$/, '');
+    parsed.search = '';
+    parsed.hash = '';
+
+    return parsed.toString().replace(/\/+$/, '');
+  } catch {
     throw new ImgSearchError(
-      'Missing Google Custom Search engine id',
-      'Bot chưa cấu hình Google Custom Search Engine ID.'
+      `Invalid SearXNG base URL: ${baseUrl}`,
+      'SearXNG instance URL không hợp lệ.'
     );
   }
-
-  return { apiKey, cx };
 }
 
-function getGoogleSearchErrorMessage(error) {
-  const responseData = error?.response?.data;
-  const googleError = responseData?.error;
-  const statusCode = error?.response?.status || googleError?.code;
-  const googleStatus = googleError?.status;
-  const googleMessage = googleError?.message || error?.message || '';
-
-  if (
-    statusCode === 403 ||
-    googleStatus === 'PERMISSION_DENIED' ||
-    googleMessage.includes('does not have the access to Custom Search')
-  ) {
-    return 'Google đang từ chối Custom Search API key (403). Chủ bot cần kiểm tra GOOGLE_CUSTOM_SEARCH_TOKEN/GOOGLE_TOKEN đúng project đã enable Custom Search API và API restrictions có Custom Search API.';
+function resolveUrl(rawUrl, baseUrl) {
+  if (typeof rawUrl !== 'string' || rawUrl.trim().length === 0) {
+    return null;
   }
 
-  if (statusCode === 400) {
-    return 'Google Custom Search đang báo cấu hình request không hợp lệ. Chủ bot cần kiểm tra GOOGLE_CUSTOM_SEARCH_CX.';
+  try {
+    return new URL(rawUrl.trim(), `${baseUrl}/`).toString();
+  } catch {
+    return null;
+  }
+}
+
+function pickImageResult(results, query, baseUrl) {
+  for (const item of results) {
+    if (!item) continue;
+
+    const title = item?.title || item?.content || query;
+    const imageUrl = [
+      item?.img_src,
+      item?.thumbnail_src,
+      item?.thumbnail,
+    ]
+      .map((url) => resolveUrl(url, baseUrl))
+      .find((url) => isValidHttpUrl(url));
+
+    if (imageUrl) {
+      console.log('[requestSearxngAPI] using image result:', imageUrl);
+      return { title, link: imageUrl };
+    }
+
+    const fallbackUrl = resolveUrl(item?.url, baseUrl);
+    if (fallbackUrl && isLikelyImageUrl(fallbackUrl)) {
+      console.log('[requestSearxngAPI] using fallback image url:', fallbackUrl);
+      return { title, link: fallbackUrl };
+    }
+  }
+
+  return null;
+}
+
+function getSearxngErrorMessage(error) {
+  const statusCode = error?.response?.status;
+
+  if (statusCode === 403) {
+    return 'SearXNG instance đang chặn JSON output hoặc image search. Hãy bật `json` trong `search.formats` của settings.yml.';
+  }
+
+  if (statusCode === 404) {
+    return 'Không tìm thấy endpoint SearXNG. Chủ bot cần kiểm tra SEARXNG_BASE_URL.';
+  }
+
+  if (statusCode === 429) {
+    return 'SearXNG instance đang bị rate limit, thử lại sau nhé.';
+  }
+
+  if (error?.code === 'ENOTFOUND' || error?.code === 'ECONNREFUSED' || error?.code === 'ETIMEDOUT') {
+    return 'Không kết nối được tới SearXNG instance.';
   }
 
   return DEFAULT_ERROR_MESSAGE;
 }
 
-async function requestGoogleAPI(rawQuery = '') {
+async function requestSearxngAPI(rawQuery = '') {
   const query = typeof rawQuery === 'string' ? rawQuery.trim() : '';
   if (!query) {
     return null;
   }
 
   try {
-    const { apiKey, cx } = getGoogleSearchConfig();
+    const baseUrl = getSearxngBaseUrl();
+    const requestUrl = new URL(SEARXNG_SEARCH_PATH, `${baseUrl}/`).toString();
     const params = {
-      cx,
-      searchType: 'image',
-      safe: 'off',
-      num: 10,
       q: query,
-      key: apiKey,
+      categories: 'images',
+      format: 'json',
+      safesearch: 0,
+      pageno: 1,
     };
-    const requestUrl = new URL(GOOGLE_CUSTOM_SEARCH_URL);
-    requestUrl.search = new URLSearchParams(params).toString();
-    // console.log('[requestGoogleAPI] request url:', requestUrl.toString());
 
-    const { data } = await axios.get(GOOGLE_CUSTOM_SEARCH_URL, { params });
+    const { data } = await axios.get(requestUrl, {
+      params,
+      headers: { Accept: 'application/json' },
+      timeout: 15000,
+    });
 
-    if (!data || !Array.isArray(data.items) || data.items.length === 0) {
+    if (!data || !Array.isArray(data.results) || data.results.length === 0) {
       return null;
     }
 
-    const firstItem = data.items[0];
-    const fallbackThumbnail = firstItem?.image?.thumbnailLink || null;
-    const fallbackTitle = firstItem?.title || firstItem?.snippet || query;
-
-    for (const item of data.items) {
-      if (!item) continue;
-
-      const title = item?.title || item?.snippet || query;
-
-      if (isLikelyImageUrl(item?.link)) {
-        console.log('[requestGoogleAPI] using item link image:', item.link);
-        return { title, link: item.link };
-      }
-    }
-
-    if (fallbackThumbnail) {
-      console.log('[requestGoogleAPI] no image links found, using fallback thumbnail:', fallbackThumbnail);
-      return {
-        title: fallbackTitle,
-        link: fallbackThumbnail,
-      };
-    }
-
-    return null;
+    return pickImageResult(data.results, query, baseUrl);
   } catch (error) {
     if (error instanceof ImgSearchError) {
-      console.log('ERR requestGoogleAPI:', error.message);
+      console.log('ERR requestSearxngAPI:', error.message);
       throw error;
     }
 
-    const googleError = error?.response?.data?.error;
-    console.log('ERR requestGoogleAPI:', googleError || error);
+    console.log('ERR requestSearxngAPI:', error?.response?.data || error);
     throw new ImgSearchError(
-      googleError?.message || error?.message || 'Google Custom Search request failed',
-      getGoogleSearchErrorMessage(error)
+      error?.message || 'SearXNG image search request failed',
+      getSearxngErrorMessage(error)
     );
   }
 }
@@ -142,13 +171,13 @@ export const commandObj = {
   guildOnly: true,
   async execute(message, args) {
     if (!args[0]) {
-      return message.channel.send(`"${PREFIX}img <keywords>" trả về kết quả đầu tiên khi search trên Google <:doge:428416714946904074> `);
+      return message.channel.send(`"${PREFIX}img <keywords>" trả về kết quả đầu tiên khi search ảnh bằng SearXNG <:doge:428416714946904074> `);
     }
 
     const search = args.join(' ');
 
     try {
-      const resultImage = await requestGoogleAPI(search);
+      const resultImage = await requestSearxngAPI(search);
       if (resultImage) {
         const { title, link } = resultImage;
         const imgEmbel = new Discord.EmbedBuilder()
